@@ -1,11 +1,16 @@
-import { Button } from "@/components/ui/button"
+import { BrowserRouter, Routes, Route } from 'react-router';
+import Home from './components/Home';
+import Templates from './components/Templates';
 
 function App() {
   return (
-    <>
-      <Button>Click Me</Button>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/templates" element={<Templates />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
