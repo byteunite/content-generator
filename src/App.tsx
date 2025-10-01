@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router';
-import Home from './components/Home';
-import Templates from './components/Templates';
+import Home from './pages/Home';
+import Templates from './pages/Templates';
 import Navbar from './components/Navbar';
 
 function App() {

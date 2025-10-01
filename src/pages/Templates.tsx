@@ -1,6 +1,7 @@
 import React from 'react';
-import Card, { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card'
-import { Button } from './ui/button'
+import Card, { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import UploadTemplateSheet from '../components/UploadTemplateSheet'
 
 const items = [
   { id: 1, title: 'Template 1', image: '/vite.svg', desc: 'Quick start template' },
@@ -12,7 +13,10 @@ const items = [
 const Templates: React.FC = () => {
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Templates</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl flex-1 font-bold">Templates</h1>
+        <UploadTemplateSheet />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {items.map((it) => (
