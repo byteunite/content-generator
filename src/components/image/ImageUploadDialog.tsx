@@ -40,12 +40,12 @@ export default function ImageUploadDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Upload image</Button>
+        <Button>Upload Template</Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Upload image</DialogTitle>
+          <DialogTitle>Upload Template</DialogTitle>
         </DialogHeader>
 
         <Card className="p-0 border">
