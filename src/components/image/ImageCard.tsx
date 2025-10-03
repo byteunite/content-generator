@@ -1,5 +1,5 @@
-import { Card } from "../ui/card"
-import { cn } from "../../lib/utils"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface ImageCardProps {
   src: string
@@ -9,21 +9,21 @@ interface ImageCardProps {
 
 export function ImageCard({ src, alt = "", title }: ImageCardProps) {
   return (
-    <Card className="flex flex-col pt-0">
-      <div className="relative w-full h-48 bg-muted overflow-hidden">
-        <img
-          src={src}
-          alt={alt}
-          className={cn(
-            "object-cover w-full h-full",
-          )}
-        />
-      </div>
-      {title && (
-        <div className="p-3">
-          <h3 className="text-sm font-medium truncate">{title}</h3>
+    <Card className="flex flex-col p-0 overflow-hidden">
+      <CardContent className="p-0">
+        <div className="relative w-full bg-muted">
+          <img
+            src={src}
+            alt={alt}
+            className={cn(
+              "object-cover w-full h-full",
+            )}
+          />
         </div>
-      )}
+        {title && (
+          <CardTitle className="p-3 text-sm font-medium truncate">{title}</CardTitle>
+        )}
+      </CardContent>
     </Card>
   )
 }
