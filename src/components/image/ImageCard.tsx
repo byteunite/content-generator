@@ -1,4 +1,4 @@
-import Card from "../ui/card"
+import { Card } from "../ui/card"
 import { cn } from "../../lib/utils"
 
 interface ImageCardProps {
@@ -9,7 +9,7 @@ interface ImageCardProps {
 
 export function ImageCard({ src, alt = "", title }: ImageCardProps) {
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col pt-0">
       <div className="relative w-full h-48 bg-muted overflow-hidden">
         <img
           src={src}
