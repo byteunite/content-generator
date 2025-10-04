@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router'
 import { TemplatesPage } from './pages/TemplatesPage'
 import { OutputsPage } from './pages/OutputsPage'
 import { FloatingNav } from './components/navigation/FloatingNav'
