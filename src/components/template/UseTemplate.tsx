@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import type { Template } from "@/types/template"
 import { useMutation } from "convex/react"
 import { api } from "convex/_generated/api"
+import { useNavigate } from "react-router"
 
 interface UseTemplateProps {
   template: Template
@@ -25,6 +26,7 @@ export function UseTemplate({ template, trigger }: UseTemplateProps) {
   const [open, setOpen] = useState(false)
   const [topic, setTopic] = useState("")
   const createOutput = useMutation(api.output.create)
+  const navigate = useNavigate()
 
   async function handleGenerate() {
     await createOutput({
@@ -32,6 +34,7 @@ export function UseTemplate({ template, trigger }: UseTemplateProps) {
       topic
     })
     setOpen(false)
+    navigate("/outputs")
   }
 
   return (
