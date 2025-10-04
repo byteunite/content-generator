@@ -7,9 +7,12 @@ import {
   DialogTitle,
   DialogClose,
   DialogFooter,
-} from "../ui/dialog"
-import { Card } from "../ui/card"
-import { Button } from "../ui/button"
+} from "@/components/ui/dialog"
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { useMutation } from "convex/react"
+import { api } from "convex/_generated/api"
+import { toast } from "sonner"
 
 type FilePreview = {
   file: File
@@ -17,28 +20,48 @@ type FilePreview = {
 }
 
 export default function ImageUploadDialog() {
+  const [open, setOpen] = useState(false)
   const [preview, setPreview] = useState<FilePreview | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const generateUploadUrl = useMutation(api.storage.generateUploadUrl)
 
-  const addFile = useCallback((files: FileList | null) => {
+  const addFile = (files: FileList | null) => {
     if (!files || files.length === 0) return
     const f = files[0]
     // revoke previous
     if (preview) URL.revokeObjectURL(preview.url)
     setPreview({ file: f, url: URL.createObjectURL(f) })
-  }, [preview])
+  }
 
-  const clear = useCallback(() => {
+  const clear = () => {
     if (preview) URL.revokeObjectURL(preview.url)
     setPreview(null)
-  }, [preview])
+    setOpen(false)
+  }
 
-  const onFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     addFile(e.target.files)
-  }, [addFile])
+  }
+
+  const onSubmit = async () => {
+    if (!preview) return
+
+    const uploadUrl = await generateUploadUrl()
+    const result = await fetch(uploadUrl, {
+      method: "POST",
+      headers: { "Content-Type": preview.file.type },
+      body: preview.file,
+    });
+    const { storageId } = await result.json();
+
+    console.log("Uploaded file with storage ID:", storageId);
+
+    toast.success("Template uploaded successfully!")
+    clear()
+  }
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>
         <Button>Upload Template</Button>
       </DialogTrigger>
@@ -86,11 +109,11 @@ export default function ImageUploadDialog() {
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline" onClick={() => clear()}>
-              Close
+              Cancel
             </Button>
           </DialogClose>
 
-          <Button disabled={!preview}>Upload</Button>
+          <Button onClick={onSubmit} disabled={!preview}>Upload</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
