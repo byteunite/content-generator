@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -16,7 +17,7 @@ export function TemplateCard({ template }: TemplateCardProps) {
   const statusVariant = template.status === 'failed' ? 'destructive' : template.status === 'processing' ? 'warning' : 'success'
 
   return (
-    <Card className="flex flex-col p-0 overflow-hidden break-inside-avoid mb-4">
+    <Card className="group flex flex-col p-0 overflow-hidden break-inside-avoid mb-4">
       <CardContent className="p-0">
         <div className="relative w-full bg-muted">
           <img
@@ -29,6 +30,16 @@ export function TemplateCard({ template }: TemplateCardProps) {
           <Badge variant={statusVariant} className="absolute top-2 right-2">
             {template.status}
           </Badge>
+          {/* Hover-only button overlay (appears when card is hovered) */}
+          <div className="absolute group-hover:bg-black/20 transition-opacity duration-500 inset-0 flex items-center justify-center p-3 pointer-events-none">
+            <Button
+              size="sm"
+              variant="outline"
+              className="opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 pointer-events-auto"
+            >
+              Use template
+            </Button>
+          </div>
         </div>
         {
           template.status === 'completed' && (
