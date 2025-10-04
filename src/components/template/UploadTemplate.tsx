@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import {
   Dialog,
   DialogTrigger,
@@ -24,6 +24,7 @@ export default function ImageUploadDialog() {
   const [preview, setPreview] = useState<FilePreview | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl)
+  const createTemplate = useMutation(api.template.create)
 
   const addFile = (files: FileList | null) => {
     if (!files || files.length === 0) return
@@ -46,15 +47,19 @@ export default function ImageUploadDialog() {
   const onSubmit = async () => {
     if (!preview) return
 
+    // Get the upload URL
     const uploadUrl = await generateUploadUrl()
+
+    // Upload the file to the URL
     const result = await fetch(uploadUrl, {
       method: "POST",
       headers: { "Content-Type": preview.file.type },
       body: preview.file,
     });
     const { storageId } = await result.json();
-
-    console.log("Uploaded file with storage ID:", storageId);
+    
+    // Create a new template record in the database
+    await createTemplate({ storageId })
 
     toast.success("Template uploaded successfully!")
     clear()

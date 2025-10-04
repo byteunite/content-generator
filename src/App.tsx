@@ -1,10 +1,5 @@
-import { ImageGrid } from "./components/image/ImageGrid"
-import ImageUploadDialog from "./components/image/ImageUploadDialog"
-
-const initialImages = Array.from({ length: 12 }).map((_, i) => ({
-  src: `https://picsum.photos/id/${i + 1}/600/600`,
-  title: `Template ${i + 1}`,
-}))
+import { TemplateGrid } from "./components/template/TemplateGrid"
+import UploadTemplate from "./components/template/UploadTemplate"
 
 function App() {
   return (
@@ -15,12 +10,12 @@ function App() {
           <p className="text-sm text-muted-foreground mt-1">A gallery of templates where you can upload and use the template to generate content</p>
         </div>
         <div>
-          <ImageUploadDialog />
+          <UploadTemplate />
         </div>
       </header>
 
       <main>
-        <ImageGrid images={initialImages} />
+        <TemplateGrid />
       </main>
     </div>
   )
