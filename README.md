@@ -1,5 +1,7 @@
 # 🤖 AI Content Generator
 
+[![Deploy](https://img.shields.io/badge/Deploy-Live-blue)](https://aicongen.byteunite.dev/)
+
 A React-based application for generating content and images from visual templates using AI. Built with Vite, TypeScript, and shadcn/ui components, featuring a masonry gallery for browsing and uploading templates.
 
 ## 📋 About the Project
