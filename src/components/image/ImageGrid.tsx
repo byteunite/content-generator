@@ -1,8 +1,8 @@
 import { useQuery } from "convex/react"
-import { TemplateCard } from "./TemplateCard"
+import { TemplateCard } from "../template/TemplateCard"
 import { api } from 'convex/_generated/api'
 
-export function TemplateGrid() {
+export function ImageGrid() {
   const templates = useQuery(api.template.list)
 
   if (!templates) {
@@ -10,7 +10,7 @@ export function TemplateGrid() {
   }
 
   return (
-    <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start">
       {templates.map((template, idx) => (
         <TemplateCard key={idx} template={template} />
       ))}
@@ -18,4 +18,4 @@ export function TemplateGrid() {
   )
 }
 
-export default TemplateGrid
+export default ImageGrid

@@ -1,4 +1,8 @@
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { Template } from "@/types/template"
 
@@ -7,8 +11,12 @@ interface TemplateCardProps {
 }
 
 export function TemplateCard({ template }: TemplateCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const statusVariant = template.status === 'failed' ? 'destructive' : template.status === 'processing' ? 'warning' : 'success'
+
   return (
-    <Card className="flex flex-col p-0 overflow-hidden">
+    <Card className="flex flex-col p-0 overflow-hidden break-inside-avoid mb-4">
       <CardContent className="p-0">
         <div className="relative w-full bg-muted">
           <img
@@ -18,12 +26,29 @@ export function TemplateCard({ template }: TemplateCardProps) {
               "object-cover w-full h-full",
             )}
           />
-          <span className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
+          <Badge variant={statusVariant} className="absolute top-2 right-2">
             {template.status}
-          </span>
+          </Badge>
         </div>
-        <CardTitle className="p-3 text-sm font-medium truncate">{template.title}</CardTitle>
-        <CardDescription className="px-3 pb-3 text-xs text-muted-foreground">{template.prompt}</CardDescription>
+        {
+          template.status === 'completed' && (
+            <>
+              <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+                <CollapsibleTrigger asChild>
+                  <CardTitle className="p-3 text-sm font-medium flex items-center justify-between">
+                    {template.title}
+                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </CardTitle>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardDescription className="px-3 pb-3 text-xs text-muted-foreground">
+                    {template.prompt}
+                  </CardDescription>
+                </CollapsibleContent>
+              </Collapsible>
+            </>
+          )
+        }
       </CardContent>
     </Card>
   )

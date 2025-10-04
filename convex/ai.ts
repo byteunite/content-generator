@@ -33,16 +33,16 @@ You are a prompt engineer and artist. Analyze the given image and create a desig
 
 ## Instructions
 
-1. Analyze the image to identify: style, layout, colors, main objects, decorative elements, text placement
-2. Create a concise, single-paragraph prompt with [placeholder_name] for all replaceable elements
-3. Write placeholders for: colors, main objects, themes, decorative elements, and all text content
+1. Analyze the image to identify: style, layout, colors, objects, decorative elements, text placement, and composition details (e.g., aspect ratio, focal points).
+2. Create a concise prompt (1-2 paragraphs max) with [placeholder_name] for all replaceable elements.
+3. Write placeholders for: colors, objects, themes, decorative elements, fonts, lighting, backgrounds, and all text content. Ensure placeholders cover all variable elements in the image, including any not explicitly listed. If an element is fixed, describe it directly without a placeholder.
 
 ## Output Format
 
 Return your response as a JSON object with exactly 2 fields:
 {
   "title": "Short, concise, engaging title describing the design style",
-  "prompt": "Example: Create a creative collage design in a modern style with [primary_color] as the dominant color, featuring [main_object] in the center as the focal point, surrounded by decorative elements themed around [theme_topic] such as [decorative_element_1], [decorative_element_2], and [decorative_element_3]. Use a thick white frame around the elements to give a neat impression. Add title text [title_text] at the bottom and smaller text [subtitle_text] beneath it. The composition follows the reference poster layout (solid-color background, white frame, main object centered, decorative elements scattered)."
+  "prompt": "Example: Create a [style] design with [primary_color] background, featuring [main_subject] as the centerpiece, accented by [decorative_elements] themed around [theme]. Position [text_elements] at [location], using [font_style] for readability. Maintain [layout_details] from the reference image."
 }
 
 ## Guidelines
@@ -51,8 +51,9 @@ Return your response as a JSON object with exactly 2 fields:
 - Prompt: 1-2 paragraphs max, concise and actionable
 - Use [placeholder_name] format (snake_case) for all replaceable content (no bold, no markdown)
 - Include specific layout and composition details
-- Write prompt in natural, flowing language (can use Indonesian or English based on context)
+- Write prompt in natural, flowing English
 - Make it immediately usable as a template
+- The image is a design reference, not the final output; objects and elements can be replaced with alternatives
 `;
       const prompt = `Analyze the following image and generate a design prompt template with placeholders as per the instructions.`;
     
