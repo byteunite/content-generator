@@ -5,8 +5,15 @@ import { api } from 'convex/_generated/api'
 export function TemplateGrid() {
   const templates = useQuery(api.template.list)
 
+  console.log(templates);
+  
+
   if (!templates) {
     return <div>Loading...</div>
+  }
+
+  if (templates.length === 0) {
+    return <div>No templates found.</div>
   }
 
   return (

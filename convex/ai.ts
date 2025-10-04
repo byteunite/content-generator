@@ -56,9 +56,9 @@ Return your response as a JSON object with exactly 2 fields:
 - The image is a design reference, not the final output; objects and elements can be replaced with alternatives
 `;
       const prompt = `Analyze the following image and generate a design prompt template with placeholders as per the instructions.`;
-    
+
       console.log("Analyzing image with AI...", { system, prompt, file, fileType: file.type });
-      
+
       console.time("AI analyze image")
       const response = await generateText({
         model: google('gemini-2.5-flash'),
@@ -93,7 +93,7 @@ Return your response as a JSON object with exactly 2 fields:
       })
     } catch (error) {
       console.error("Error analyzing image:", error)
-      ctx.runMutation(internal.template.updateResult, {
+      await ctx.runMutation(internal.template.updateResult, {
         storageId,
         result: {
           status: "failed"
@@ -103,3 +103,47 @@ Return your response as a JSON object with exactly 2 fields:
   }
 })
 
+export const generatePrompt = internalAction({
+  args: {
+    basePrompt: v.string(),
+    topic: v.string(),
+    outputId: v.id("outputs"),
+  },
+  handler: async (ctx, { basePrompt, topic, outputId }) => {
+    try {
+      const prompt = `
+I want to create a social media post with topic: ${topic}. 
+please adjust the prompt below to fill the placeholder based on above topic: 
+${basePrompt}
+    `;
+
+      console.time("AI generate prompt")
+      const response = await generateText({
+        model: google('gemini-2.5-flash'),
+        prompt
+      });
+      console.timeEnd("AI generate prompt")
+
+      console.log("Generated prompt:")
+      console.log(response.text)
+
+      await ctx.runMutation(internal.output.updateResult, {
+        outputId,
+        result: {
+          prompt: response.text,
+          status: 'prompt_generated',
+        }
+      })
+    } catch (error) {
+      console.log("Error generating prompt:");
+      console.error(error);
+
+      await ctx.runMutation(internal.output.updateResult, {
+        outputId,
+        result: {
+          status: 'failed'
+        }
+      })
+    }
+  }
+})

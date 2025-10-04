@@ -1,3 +1,4 @@
+import UseTemplate from "@/components/template/UseTemplate"
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -23,43 +24,47 @@ export function TemplateCard({ template }: TemplateCardProps) {
           <img
             src={template.imageUrl}
             alt={template.title}
-            className={cn(
-              "object-cover w-full h-full",
-            )}
+            className="object-cover w-full h-full"
           />
           <Badge variant={statusVariant} className="absolute top-2 right-2">
             {template.status}
           </Badge>
           {/* Hover-only button overlay (appears when card is hovered) */}
-          <div className="absolute group-hover:bg-black/20 transition-opacity duration-500 inset-0 flex items-center justify-center p-3 pointer-events-none">
-            <Button
-              size="sm"
-              variant="outline"
-              className="opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 pointer-events-auto"
-            >
-              Use template
-            </Button>
-          </div>
+          {template.status === 'completed' && (
+            <div className="absolute inset-0 flex items-center justify-center p-3 pointer-events-none">
+              <UseTemplate
+                template={template}
+                trigger={
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all pointer-events-auto"
+                  >
+                    Use template
+                  </Button>
+                }
+              />
+            </div>
+          )}
         </div>
-        {
-          template.status === 'completed' && (
-            <>
-              <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
-                <CollapsibleTrigger asChild>
-                  <CardTitle className="p-3 text-sm font-medium flex items-center justify-between">
-                    {template.title}
-                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                  </CardTitle>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <CardDescription className="px-3 pb-3 text-xs text-muted-foreground">
-                    {template.prompt}
-                  </CardDescription>
-                </CollapsibleContent>
-              </Collapsible>
-            </>
-          )
-        }
+
+        {template.status === 'completed' && (
+          <>
+            <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+              <CollapsibleTrigger asChild>
+                <CardTitle className="p-3 text-sm font-medium flex items-center justify-between">
+                  {template.title}
+                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </CardTitle>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardDescription className="px-3 pb-3 text-xs text-muted-foreground">
+                  {template.prompt}
+                </CardDescription>
+              </CollapsibleContent>
+            </Collapsible>
+          </>
+        )}
       </CardContent>
     </Card>
   )
