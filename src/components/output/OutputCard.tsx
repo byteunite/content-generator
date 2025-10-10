@@ -16,8 +16,8 @@ export function OutputCard({ output }: OutputCardProps) {
     output.status === 'failed'
       ? 'destructive'
       : output.status === 'image_generated'
-      ? 'success'
-      : 'warning'
+        ? 'success'
+        : 'warning'
 
   const statusLabel = {
     'generating_prompt': 'Generating Prompt',
@@ -27,25 +27,33 @@ export function OutputCard({ output }: OutputCardProps) {
     'failed': 'Failed',
   }[output.status]
 
+  let imageUrl = 'https://placehold.co/400x600?text=No+Image'
+  if (output.imageUrl) {
+    imageUrl = output.imageUrl
+  } else if (output.template && output.template.imageUrl) {
+    imageUrl = output.template.imageUrl
+  }
+
+
   return (
     <Card className="group flex flex-col p-0 overflow-hidden break-inside-avoid mb-4 hover:shadow-lg transition-shadow">
       <CardContent className="p-0">
         {/* Template Image Preview */}
-        {output.template?.imageUrl && (
-          <div className="relative w-full bg-muted">
-            <img
-              src={output.template.imageUrl}
-              alt={output.template.title}
-              className="object-contain w-full h-full"
-            />
+
+        <div className="relative w-full bg-muted">
+          <img
+            src={imageUrl}
+            className="object-contain w-full h-full"
+          />
+          {output.status !== 'image_generated' && (
             <Badge variant="secondary" className="absolute top-2 left-2 text-xs">
               Template
             </Badge>
-            <Badge variant={statusVariant} className="absolute top-2 right-2 text-xs">
-              {statusLabel}
-            </Badge>
-          </div>
-        )}
+          )}
+          <Badge variant={statusVariant} className="absolute top-2 right-2 text-xs">
+            {statusLabel}
+          </Badge>
+        </div>
 
         {/* Content Section */}
         <div className="p-4 space-y-3">

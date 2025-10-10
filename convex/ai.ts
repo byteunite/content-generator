@@ -106,21 +106,28 @@ Return your response as a JSON object with exactly 2 fields:
 export const generatePrompt = internalAction({
   args: {
     basePrompt: v.string(),
+    baseImageUrl: v.string(),
     topic: v.string(),
     outputId: v.id("outputs"),
   },
-  handler: async (ctx, { basePrompt, topic, outputId }) => {
+  handler: async (ctx, { basePrompt, baseImageUrl, topic, outputId }) => {
     try {
-      const prompt = `
-I want to create a social media post with topic: ${topic}. 
-please adjust the prompt below to fill the placeholder based on above topic: 
-${basePrompt}
-    `;
+      const prompt = `I want to create a social media post with topic: ${topic}. 
+please adjust the prompt below to fill the placeholder based on above topic: ${basePrompt}.
+please only respond with the final prompt without any additional explanation.`;
 
       console.time("AI generate prompt")
       const response = await generateText({
         model: google('gemini-2.5-flash'),
-        prompt
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: prompt },
+              { type: 'image', image: baseImageUrl }
+            ]
+          }
+        ]
       });
       console.timeEnd("AI generate prompt")
 
@@ -136,6 +143,71 @@ ${basePrompt}
       })
     } catch (error) {
       console.log("Error generating prompt:");
+      console.error(error);
+
+      await ctx.runMutation(internal.output.updateResult, {
+        outputId,
+        result: {
+          status: 'failed'
+        }
+      })
+    }
+  }
+})
+
+export const generateImage = internalAction({
+  args: {
+    prompt: v.string(),
+    baseImageUrl: v.string(),
+    outputId: v.id("outputs"),
+  },
+  handler: async (ctx, { prompt, baseImageUrl, outputId }) => {
+    try {
+      const response = await fetch('https://ark.ap-southeast.bytepluses.com/api/v3/images/generations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.MODEL_ARK_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "seedream-4-0-250828",
+          prompt: "Please create new image based on the image and this prompt: " + prompt,
+          image: baseImageUrl,
+          sequential_image_generation: "disabled",
+          response_format: "url",
+          size: "1k",
+          stream: false,
+          watermark: false
+        })
+      });
+
+      if (!response.ok) {
+        throw await response.json()
+      }
+
+      const { data } = await response.json() as { data: { url: string }[] }
+      
+      
+      if (!data || data.length === 0) {
+        throw new Error("No image generated");
+      }
+
+      // Download the image
+      const imageResponse = await fetch(data[0].url);
+      const image = await imageResponse.blob();
+
+      // Store the image in Convex
+      const storageId = await ctx.storage.store(image);
+
+      await ctx.runMutation(internal.output.updateResult, {
+        outputId,
+        result: {
+          status: 'image_generated',
+          storageId
+        }
+      })
+    } catch (error) {
+      console.log("Error generating image:");
       console.error(error);
 
       await ctx.runMutation(internal.output.updateResult, {

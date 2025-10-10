@@ -4,7 +4,7 @@ import { OutputCard } from "./OutputCard"
 import { Loader2 } from "lucide-react"
 
 export function OutputGrid() {
-  const outputs = useQuery(api.outputs.list)
+  const outputs = useQuery(api.output.list)
 
   if (outputs === undefined) {
     return (
