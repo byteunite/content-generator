@@ -12,16 +12,17 @@ This project lets users explore a gallery of visual templates. Upload your own i
 
 1. **📤 Upload Templates**: Upload an image, and AI analyzes it to create a reusable template with design elements and a customizable prompt.
 2. **🖼️ Browse and Select**: View templates in a responsive masonry gallery. Hover for previews and click to select.
-3. **✏️ Customize and Generate**: Enter a topic. AI adjusts the prompt and generates content (text) and eventually a new image matching the template style.
-4. **🧠 AI-Powered Process**: Everything uses AI – from template creation to content and image generation.
+3. **✏️ Customize and Generate**: Enter a topic. AI adjusts the prompt and generates both customized content and a brand new image matching the template style.
+4. **🧠 AI-Powered Process**: Everything uses AI – from template creation to content and image generation using Google Gemini and BytePlus Seedream.
 
 ## ✨ Key Features
 
 - 🖼️ Masonry image gallery with hover interactions
 - 📤 Upload custom image templates
-- 🤖 AI-powered template creation from image uploads
+- 🤖 AI-powered template creation from image uploads using Google Gemini
 - 🎯 Template selection and topic-based content generation
-- 🎨 AI-driven content and image generation
+- 🎨 AI-driven prompt generation tailored to your topic
+- 🖼️ AI-powered image generation using BytePlus Seedream
 - 🎨 shadcn/ui components for consistent styling
 - 🔧 Convex backend integration for data management
 - 🛡️ TypeScript for type safety
@@ -29,9 +30,11 @@ This project lets users explore a gallery of visual templates. Upload your own i
 ## 🛠️ Tech Stack
 
 - ⚛️ **Frontend**: React, TypeScript, Vite
-- 🎨 **UI**: shadcn/ui, Tailwind CSS
+- 🎨 **UI**: shadcn/ui, Tailwind CSS, React Router
 - 🔧 **Backend**: Convex
-- 🤖 **AI**: Google Gemini (via @ai-sdk/google)
+- 🤖 **AI Models**: 
+  - Google Gemini 2.5 Flash (via @ai-sdk/google) - Template analysis & prompt generation
+  - BytePlus Seedream 4.0 - AI image generation
 - 🎯 **Icons**: Lucide React
 - 📦 **Package Manager**: npm, yarn, or bun
 
@@ -41,6 +44,8 @@ This project lets users explore a gallery of visual templates. Upload your own i
 - 🟢 Node.js (version 18 or higher recommended)
 - 📦 npm, yarn, or bun package manager
 - 🔧 Convex account and CLI (for backend)
+- 🤖 Google AI API key (for Gemini)
+- 🎨 BytePlus Model Ark API key (for Seedream image generation)
 
 ### Installation
 ```bash
@@ -50,7 +55,7 @@ npm install
 bun install
 ```
 
-### Setup Convex
+### Setup Convex & Environment Variables
 ```bash
 # Initialize Convex in your project (if not already done)
 bunx convex dev
@@ -58,6 +63,10 @@ bunx convex dev
 npx convex dev
 
 # This will set up your Convex backend and provide a deployment URL
+
+# Set up environment variables in Convex dashboard
+# GOOGLE_GENERATIVE_AI_API_KEY - Your Google AI API key
+# MODEL_ARK_API_KEY - Your BytePlus Model Ark API key
 ```
 
 ### Development
