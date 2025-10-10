@@ -6,6 +6,7 @@ import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
 import { cleanJson } from './helpers';
 import { internal } from './_generated/api';
+import process from 'process';
 
 type AnalyzeImageResult = {
   title: string;
