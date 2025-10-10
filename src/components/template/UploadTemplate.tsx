@@ -22,6 +22,7 @@ type FilePreview = {
 export default function ImageUploadDialog() {
   const [open, setOpen] = useState(false)
   const [preview, setPreview] = useState<FilePreview | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl)
   const createTemplate = useMutation(api.template.create)
@@ -47,22 +48,31 @@ export default function ImageUploadDialog() {
   const onSubmit = async () => {
     if (!preview) return
 
-    // Get the upload URL
-    const uploadUrl = await generateUploadUrl()
+    try {
+      setIsUploading(true)
+      
+      // Get the upload URL
+      const uploadUrl = await generateUploadUrl()
 
-    // Upload the file to the URL
-    const result = await fetch(uploadUrl, {
-      method: "POST",
-      headers: { "Content-Type": preview.file.type },
-      body: preview.file,
-    });
-    const { storageId } = await result.json();
-    
-    // Create a new template record in the database
-    await createTemplate({ storageId })
+      // Upload the file to the URL
+      const result = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": preview.file.type },
+        body: preview.file,
+      });
+      const { storageId } = await result.json();
+      
+      // Create a new template record in the database
+      await createTemplate({ storageId })
 
-    toast.success("Template uploaded successfully!")
-    clear()
+      toast.success("Template uploaded successfully!")
+      clear()
+    } catch (error) {
+      toast.error("Failed to upload template")
+      console.error("Upload error:", error)
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   return (
@@ -86,7 +96,11 @@ export default function ImageUploadDialog() {
                   className="absolute inset-0 h-full w-full object-contain"
                 />
                 <div className="absolute top-4 right-4">
-                  <Button variant="outline" onClick={() => inputRef.current?.click()}>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => inputRef.current?.click()}
+                    disabled={isUploading}
+                  >
                     Change image
                   </Button>
                 </div>
@@ -113,12 +127,14 @@ export default function ImageUploadDialog() {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline" onClick={() => clear()}>
+            <Button variant="outline" onClick={() => clear()} disabled={isUploading}>
               Cancel
             </Button>
           </DialogClose>
 
-          <Button onClick={onSubmit} disabled={!preview}>Upload</Button>
+          <Button onClick={onSubmit} disabled={!preview || isUploading}>
+            {isUploading ? "Uploading..." : "Upload"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
