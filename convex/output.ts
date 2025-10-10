@@ -67,11 +67,16 @@ export const updateResult = internalMutation({
         throw new Error("Template not found")
       }
 
+      // Get the base image URL from storage
       const baseImageUrl = await ctx.storage.getUrl(template.storageId)
       if (!baseImageUrl) {
         throw new Error("Base image not found in storage")
       }
 
+      // Update the output status to 'generating_image' before starting image generation
+      await ctx.db.patch(outputId, { status: 'generating_image', })
+
+      // Schedule the image generation task
       await ctx.scheduler.runAfter(0, internal.ai.generateImage, {
         prompt: result.prompt,
         baseImageUrl: baseImageUrl,
@@ -95,7 +100,7 @@ export const list = query({
     const outputsWithDetails = await Promise.all(
       outputs.map(async (output) => {
         const template = await ctx.db.get(output.templateId)
-        
+
         let imageUrl = null
 
         if (output.storageId) {
